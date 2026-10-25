@@ -18,5 +18,7 @@ Thumbs.db
 # Redacted outputs / testing PDFs
 *_redacted.pdf
 
-# Push helper
+# Sensitive local tokens and scripts
+*token*
+*.token
 push_to_github.py

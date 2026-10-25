@@ -72,7 +72,9 @@ python redact_pdf.py
 
 ### 2. Desktop GUI Version (`GUI/redact_gui.py`)
 
-For users who prefer a graphical interface, the GUI application offers a point-and-click workflow built on Python's native Tkinter.
+For users who prefer a graphical interface, the GUI application offers a clean point-and-click workflow built on Python's native Tkinter.
+
+![PDF Sensitive Data Redactor GUI](./GUI/screenshot.png)
 
 #### GUI Features & Workflow:
 1. **File Selection:** Click **Browse...** to pick any PDF file using a native file dialog.
@@ -120,5 +122,7 @@ PDF Security redactor/
 │   └── requirements.txt       # CLI dependencies (pymupdf>=1.24.0)
 └── GUI/
     ├── redact_gui.py          # Graphical user interface application
-    └── requirements.txt       # GUI dependencies (pymupdf>=1.24.0)
+    ├── requirements.txt       # GUI dependencies (pymupdf>=1.24.0)
+    └── screenshot.png         # Desktop GUI interface preview
 ```
+

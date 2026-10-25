@@ -12,3 +12,4 @@ A permanent PDF sanitization and redaction utility built using `PyMuPDF`. Suppor
 - **[GUI](./PDF%20Security%20redactor/GUI/):** Graphical desktop application with file browser, interactive term manager, and redaction style selector.
 
 See the [PDF Security redactor README](./PDF%20Security%20redactor/README.md) for full documentation, security details, and usage guides.
+

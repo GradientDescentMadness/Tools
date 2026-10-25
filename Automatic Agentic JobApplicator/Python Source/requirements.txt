@@ -1,0 +1,22 @@
+# Browser automation & stealth
+playwright>=1.40.0
+
+# Outlook email access (MS Graph API / MSAL)
+msal>=1.24.0
+requests>=2.31.0
+
+# Resume parsing
+pdfplumber>=0.10.0
+python-docx>=1.0.0
+
+# High-performance fuzzy string matching for skill dropdowns & QA rules
+rapidfuzz>=3.5.0
+
+# Configuration
+pyyaml>=6.0.1
+
+# Rich interactive CLI interface
+rich>=13.7.0
+
+# Date utilities
+python-dateutil>=2.8.0

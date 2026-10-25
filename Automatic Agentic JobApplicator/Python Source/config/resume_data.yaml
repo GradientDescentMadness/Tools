@@ -1,0 +1,111 @@
+# =============================================================================
+# Candidate Structured Data Profile
+# =============================================================================
+# This dataset is referenced by FormFiller to populate standard inputs
+# across ATS portals (Workday, Oracle Cloud/Taleo, Greenhouse, Lever, etc.)
+
+personal:
+  first_name: "BuBu"
+  last_name: "Candidate"
+  full_name: "BuBu Candidate"
+  email: "your.email@example.com"
+  phone: "+91-9876543210"
+  phone_country_code: "+91"
+  address:
+    street: "123 Tech Park Road"
+    city: "Bengaluru"
+    state: "Karnataka"
+    zip_code: "560001"
+    country: "India"
+  linkedin_url: "https://www.linkedin.com/in/your-profile"
+  portfolio_url: "https://github.com/GradientDescentMadness"
+  github_url: "https://github.com/GradientDescentMadness"
+  date_of_birth: ""
+  gender: "Male"
+
+# Citizenship & Work Authorization Defaults
+citizenship:
+  country: "India"
+  is_citizen_of_applied_country: false
+  needs_visa_sponsorship: true
+  work_authorized_countries:
+    - "India"
+  legally_authorized_to_work: false    # Adjusted dynamically based on target job location
+  require_sponsorship_now_or_future: true
+  veteran_status: "I am not a veteran"
+  disability_status: "I do not wish to answer"
+  race_ethnicity: "Asian (Not Hispanic or Latino)"
+
+education:
+  - degree: "Bachelor of Technology (B.Tech)"
+    field_of_study: "Computer Science and Engineering"
+    university: "National Institute of Technology"
+    location: "India"
+    graduation_date: "2020-05"
+    gpa: ""
+
+experience:
+  - title: "Software Engineer"
+    company: "Technology Solutions Inc."
+    location: "Bengaluru, India"
+    start_date: "2020-06"
+    end_date: "Present"
+    is_current: true
+    description: |
+      - Designed and developed automated cloud workflows and resilient backend systems.
+      - Integrated AI-driven microservices with enterprise data pipelines.
+      - Automated test frameworks and continuous delivery pipelines.
+
+skills:
+  technical:
+    - "Python"
+    - "JavaScript"
+    - "TypeScript"
+    - "React"
+    - "Node.js"
+    - "PostgreSQL"
+    - "SQL"
+    - "AWS"
+    - "Docker"
+    - "Kubernetes"
+    - "Git"
+    - "REST APIs"
+    - "FastAPI"
+    - "CI/CD"
+    - "Playwright"
+    - "Machine Learning"
+
+  soft:
+    - "Problem Solving"
+    - "Critical Thinking"
+    - "Cross-Functional Collaboration"
+    - "Technical Architecture"
+    - "Agile / Scrum Leadership"
+
+  certifications:
+    - name: "AWS Certified Solutions Architect"
+      issuer: "Amazon Web Services"
+      date: "2023-01"
+
+languages:
+  - language: "English"
+    proficiency: "Professional"
+  - language: "Hindi"
+    proficiency: "Native"
+
+additional:
+  notice_period: "30 days"
+  expected_salary: ""
+  salary_currency: "INR"
+  willing_to_relocate: true
+  years_of_experience: "4"
+  highest_education: "Bachelor's Degree"
+  cover_letter: |
+    Dear Hiring Team,
+
+    I am writing to express my enthusiastic interest in this engineering role. With hands-on experience in high-impact software design, cloud deployments, and process automation, I am excited about the opportunity to contribute effectively to your organization.
+
+    Thank you for your time and consideration.
+
+    Best regards,
+    BuBu Candidate

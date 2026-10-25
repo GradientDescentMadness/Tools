@@ -1,0 +1,43 @@
+# =============================================================================
+# Automatic Agentic JobApplicator - Settings Configuration
+# =============================================================================
+
+# Outlook / Microsoft Graph API settings
+# Register an app at https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps
+# Required delegated permission: Mail.Read
+# If client_id is left as placeholder, the CLI allows direct manual URL pasting.
+outlook:
+  client_id: "YOUR_CLIENT_ID_HERE"
+  tenant_id: "common"  # Use "common" for personal accounts or your specific Tenant ID
+  lookback_days: 7
+
+# Browser engine settings (Playwright)
+browser:
+  headless: false        # false allows you to visually inspect navigation & form inputs
+  slow_mo: 500           # Milliseconds between actions to mimic human interaction and bypass bot filters
+  timeout: 30000         # Milliseconds timeout for element selectors
+  user_data_dir: ""      # Optional: Path to Chrome profile folder to reuse existing logged-in sessions
+
+# LinkedIn mailer search filters
+linkedin:
+  sender_patterns:
+    - "linkedin.com"
+    - "LinkedIn"
+  subject_keywords:
+    - "job"
+    - "opportunity"
+    - "hiring"
+    - "position"
+    - "role"
+    - "career"
+    - "recommend"
+    - "match"
+    - "apply"
+
+# Application automation parameters
+application:
+  pause_before_submit: true     # STRICT SAFETY: Always halts before final submit button
+  auto_answer_questions: true   # Auto-resolves questions using qa_rules and location logic
+  screenshots: true             # Captures screenshot evidence at each section/milestone
+  screenshot_dir: "./screenshots"
+  user_input_timeout: 300       # Seconds to wait for user CLI confirmation

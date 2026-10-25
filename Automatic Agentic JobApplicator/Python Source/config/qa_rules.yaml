@@ -1,0 +1,154 @@
+# =============================================================================
+# Question & Answer Rules Engine
+# =============================================================================
+# Maps repetitive, tedious ATS questionnaire fields to standardized responses.
+# The tool uses RapidFuzz token sorting to match dynamic portal questions.
+
+rules:
+  # --- Work Authorization & Visas ---
+  - patterns:
+      - "are you legally authorized to work in"
+      - "legally authorised to work"
+      - "authorized to work in the united states"
+      - "authorized to work in the US"
+      - "do you have the legal right to work"
+      - "eligible to work in"
+    answer: "No"
+    answer_type: "radio"
+    notes: "For US/UK/EU jobs requiring local citizen authorization without sponsorship"
+
+  - patterns:
+      - "authorized to work in india"
+      - "eligible to work in india"
+      - "legal right to work in india"
+    answer: "Yes"
+    answer_type: "radio"
+    notes: "Indian citizen authorized to work in India"
+
+  - patterns:
+      - "require sponsorship"
+      - "need visa sponsorship"
+      - "need sponsorship to work"
+      - "immigration sponsorship"
+      - "require work visa"
+      - "will you now or in the future require sponsorship"
+      - "do you now or will you in the future require"
+    answer: "Yes"
+    answer_type: "radio"
+    notes: "Requires sponsorship for international roles"
+
+  - patterns:
+      - "do you need a visa to work at"
+      - "do you need a work visa"
+      - "require a visa"
+      - "need a visa"
+    answer: "No"
+    answer_type: "radio"
+    notes: "Defaults to No if in home country, resolved dynamically by LocationAwareAnswerer"
+
+  # --- EEO / Demographics ---
+  - patterns:
+      - "veteran status"
+      - "are you a veteran"
+      - "military service"
+      - "protected veteran"
+      - "have you served in"
+    answer: "I am not a protected veteran"
+    answer_type: "select"
+
+  - patterns:
+      - "disability status"
+      - "do you have a disability"
+      - "person with a disability"
+      - "voluntary self-identification of disability"
+    answer: "I do not wish to answer"
+    answer_type: "select"
+
+  - patterns:
+      - "race"
+      - "ethnicity"
+      - "racial"
+      - "ethnic background"
+    answer: "Asian (Not Hispanic or Latino)"
+    answer_type: "select"
+
+  - patterns:
+      - "hispanic or latino"
+      - "are you hispanic"
+    answer: "No"
+    answer_type: "radio"
+
+  # --- Availability & Relocation ---
+  - patterns:
+      - "willing to relocate"
+      - "open to relocation"
+      - "relocate for this"
+    answer: "Yes"
+    answer_type: "radio"
+
+  - patterns:
+      - "willing to work remotely"
+      - "open to remote work"
+      - "work from home"
+      - "hybrid work"
+    answer: "Yes"
+    answer_type: "radio"
+
+  - patterns:
+      - "willing to travel"
+      - "travel required"
+      - "percentage of travel"
+    answer: "Yes"
+    answer_type: "radio"
+
+  - patterns:
+      - "notice period"
+      - "when can you start"
+      - "available to start"
+      - "earliest start date"
+    answer: "30 days"
+    answer_type: "text"
+
+  # --- General Screening ---
+  - patterns:
+      - "are you at least 18"
+      - "are you 18 years"
+      - "over 18"
+      - "above 18"
+      - "at least 18 years old"
+    answer: "Yes"
+    answer_type: "radio"
+
+  - patterns:
+      - "convicted of a felony"
+      - "criminal record"
+      - "criminal history"
+      - "background check"
+      - "have you ever been convicted"
+    answer: "No"
+    answer_type: "radio"
+
+  - patterns:
+      - "non-compete"
+      - "non compete agreement"
+      - "restrictive covenant"
+      - "bound by any agreement"
+    answer: "No"
+    answer_type: "radio"
+
+  - patterns:
+      - "previously applied"
+      - "applied before"
+      - "former employee"
+      - "previously employed"
+      - "worked at this company"
+    answer: "No"
+    answer_type: "radio"
+
+  - patterns:
+      - "referred by"
+      - "how did you hear"
+      - "source of application"
+      - "where did you find this"
+    answer: "LinkedIn"
+    answer_type: "text"

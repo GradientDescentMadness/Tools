@@ -17,3 +17,6 @@ Thumbs.db
 
 # Redacted outputs / testing PDFs
 *_redacted.pdf
+
+# Push helper
+push_to_github.py

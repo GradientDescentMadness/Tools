@@ -201,3 +201,4 @@ class LinkedInScanner:
                 break
 
         return True
+

@@ -111,3 +111,4 @@ class SkillMatcher:
         """Convenience method returning exact dropdown options to click/select."""
         matches = self.match_dropdown_options(dropdown_options)
         return [m["option"] for m in matches if m["should_select"]]
+

@@ -125,3 +125,4 @@ Future updates will introduce direct Large Language Model (LLM) hooks (Gemini / 
 > **Notice:** The standalone Graphical User Interface (GUI) desktop application is currently **in progress** and will be published in the `GUI/` directory in the next update.
 >
 > It will feature an integrated visual dashboard, real-time live browser preview, and a visual QA editor for non-technical users.
+

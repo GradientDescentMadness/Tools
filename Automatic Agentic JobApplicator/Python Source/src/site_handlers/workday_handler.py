@@ -90,3 +90,4 @@ class WorkdayHandler(BaseHandler):
         except Exception:
             pass
         return await super().is_review_page()
+

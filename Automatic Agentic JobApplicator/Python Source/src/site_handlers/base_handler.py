@@ -107,3 +107,4 @@ def get_handler(page: Any, form_filler: Any, resume_data: Dict[str, Any], settin
         return OracleHandler(page, form_filler, resume_data, settings)
 
     return BaseHandler(page, form_filler, resume_data, settings)
+

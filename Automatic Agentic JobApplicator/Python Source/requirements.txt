@@ -20,3 +20,4 @@ rich>=13.7.0
 
 # Date utilities
 python-dateutil>=2.8.0
+

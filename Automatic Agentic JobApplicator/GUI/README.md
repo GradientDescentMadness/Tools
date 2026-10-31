@@ -10,3 +10,4 @@ The Graphical User Interface (GUI) desktop application for the Automatic Agentic
 - 🌐 **Embedded Application Webview:** Side-by-side view showing the live ATS browser session alongside the agent's real-time action feed.
 - 🧠 **LLM Question Resolution Panel:** Review and approve AI-generated long-form answers and cover letter variations on the fly.
 - 🎯 **One-Click Human Handover:** Big, accessible controls to pause, intervene, autofill individual sections, and confirm submissions.
+

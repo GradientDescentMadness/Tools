@@ -41,3 +41,4 @@ application:
   screenshots: true             # Captures screenshot evidence at each section/milestone
   screenshot_dir: "./screenshots"
   user_input_timeout: 300       # Seconds to wait for user CLI confirmation
+

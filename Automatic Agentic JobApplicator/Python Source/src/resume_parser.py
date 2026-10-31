@@ -115,3 +115,4 @@ class ResumeParser:
 def parse_resume_file(file_path: str) -> Dict[str, Any]:
     """Convenience functional wrapper for ResumeParser."""
     return ResumeParser(file_path).parse()
+

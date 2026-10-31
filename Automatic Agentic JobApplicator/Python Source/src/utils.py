@@ -89,3 +89,4 @@ async def take_screenshot(page: Any, name: str, screenshot_dir: str = "./screens
 def setup_screenshot_dir(path: str) -> None:
     """Ensure the target screenshot folder exists."""
     Path(path).mkdir(parents=True, exist_ok=True)
+

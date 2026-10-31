@@ -108,3 +108,4 @@ class LocationAwareAnswerer(QuestionAnswerer):
                 return {"answer": "Yes", "answer_type": "radio", "confidence": 98, "notes": "Location-aware rule: Foreign role requires sponsorship"}
 
         return super().find_answer(question_text)
+

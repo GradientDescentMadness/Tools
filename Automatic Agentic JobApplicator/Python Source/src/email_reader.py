@@ -143,3 +143,4 @@ class OutlookEmailReader:
                     })
 
         return results
+

@@ -266,3 +266,4 @@ class JobAutoApply:
 async def main(config_dir: str = "config", manual_urls: bool = False, headless: bool = False, screenshots: bool = True) -> None:
     app = JobAutoApply(config_dir=config_dir, manual_urls=manual_urls, headless=headless, screenshots=screenshots)
     await app.run()
+

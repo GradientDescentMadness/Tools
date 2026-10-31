@@ -5,7 +5,7 @@
 # across ATS portals (Workday, Oracle Cloud/Taleo, Greenhouse, Lever, etc.)
 
 personal:
-  first_name: "BuBu"
+  first_name: "Any"
   last_name: "Candidate"
   full_name: "BuBu Candidate"
   email: "your.email@example.com"
@@ -13,9 +13,9 @@ personal:
   phone_country_code: "+91"
   address:
     street: "123 Tech Park Road"
-    city: "Bengaluru"
-    state: "Karnataka"
-    zip_code: "560001"
+    city: "New Delhi"
+    state: "Delhi "
+    zip_code: "110023"
     country: "India"
   linkedin_url: "https://www.linkedin.com/in/your-profile"
   portfolio_url: "https://github.com/GradientDescentMadness"
@@ -47,7 +47,7 @@ education:
 experience:
   - title: "Software Engineer"
     company: "Technology Solutions Inc."
-    location: "Bengaluru, India"
+    location: "New Delhi, India"
     start_date: "2020-06"
     end_date: "Present"
     is_current: true

@@ -2,10 +2,87 @@
 # Question & Answer Rules Engine
 # =============================================================================
 # Maps repetitive, tedious ATS questionnaire fields to standardized responses.
-# The tool uses RapidFuzz token sorting to match dynamic portal questions.
+# Patterns match on whole words (longest pattern wins), with RapidFuzz as a fallback for long patterns.
+# Use `answer_from: "section.field"` to answer from resume_data.yaml instead of a fixed value.
 
 rules:
   # --- Work Authorization & Visas ---
+  - patterns:
+      - "confirm your eligibility to work in india"
+      - "eligibility to work in india"
+      - "eligible to work in india"
+      - "working rights in india"
+      - "please confirm your eligibility"
+    answer: "Yes"
+    answer_type: "select"
+    notes: "Indian citizen authorized in India"
+
+  - patterns:
+      - "visa type"
+      - "current visa"
+      - "type of visa"
+    answer: "Citizen"
+    answer_type: "select"
+    notes: "Citizen / Not Applicable"
+
+  - patterns:
+      - "usa citizen or green card holder"
+      - "us citizen or permanent resident"
+      - "green card holder"
+      - "whether you are a usa citizen"
+    answer: "No"
+    answer_type: "radio"
+    notes: "Not a US citizen or green card holder"
+
+  - patterns:
+      - "qualification status"
+      - "status of qualification"
+    answer: "Completed"
+    answer_type: "select"
+
+  - patterns:
+      - "level of qualification"
+      - "qualification level"
+    answer: "Master's Degree"
+    answer_type: "select"
+
+  - patterns:
+      - "current role"
+      - "is this your current role"
+      - "currently working here"
+    answer: "Yes"
+    answer_type: "select"
+
+  - patterns:
+      - "industry"
+      - "primary industry"
+    answer: "Banking"
+    answer_type: "select"
+
+  - patterns:
+      - "salutation"
+      - "preferred title"
+    answer: "Mr."
+    answer_type: "select"
+
+  - patterns:
+      - "pronoun"
+      - "pronouns"
+    answer: "He/Him"
+    answer_type: "select"
+
+  - patterns:
+      - "country region code"
+      - "phone country code"
+    answer: "India (+91)"
+    answer_type: "select"
+
+  - patterns:
+      - "country of residence"
+      - "country region of residence"
+    answer: "India"
+    answer_type: "select"
+
   - patterns:
       - "are you legally authorized to work in"
       - "legally authorised to work"
@@ -33,9 +110,9 @@ rules:
       - "require work visa"
       - "will you now or in the future require sponsorship"
       - "do you now or will you in the future require"
-    answer: "Yes"
+    answer: "No"
     answer_type: "radio"
-    notes: "Requires sponsorship for international roles"
+    notes: "Requires sponsorship for Only international roles"
 
   - patterns:
       - "do you need a visa to work at"
@@ -103,11 +180,33 @@ rules:
 
   - patterns:
       - "notice period"
-      - "when can you start"
-      - "available to start"
-      - "earliest start date"
-    answer: "30 days"
+      - "period of notice"
+      - "notice required"
+      - "how much notice"
+    answer_from: "additional.notice_period"
     answer_type: "text"
+
+  - patterns:
+      - "gender"
+      - "what is your gender"
+    answer_from: "personal.gender"
+    answer_type: "select"
+
+  - patterns:
+      - "date of birth"
+      - "birth date"
+      - "dob"
+    answer_from: "personal.date_of_birth"
+    answer_type: "text"
+
+  - patterns:
+      - "data privacy statement"
+      - "privacy statement"
+      - "accept data privacy"
+      - "privacy policy"
+      - "terms and conditions"
+    answer: "Yes"
+    answer_type: "radio"
 
   # --- General Screening ---
   - patterns:
@@ -125,6 +224,9 @@ rules:
       - "criminal history"
       - "background check"
       - "have you ever been convicted"
+      - "found guilty"
+      - "offence in court"
+      - "criminal offence"
     answer: "No"
     answer_type: "radio"
 
@@ -148,8 +250,134 @@ rules:
   - patterns:
       - "referred by"
       - "how did you hear"
+      - "how did you learn about"
       - "source of application"
       - "where did you find this"
+      - "where did you see"
     answer: "LinkedIn"
     answer_type: "text"
+    fallbacks: ["Job Board", "Internet", "Website", "Social Media", "Online", "Others", "Other"]
 
+  # --- Employer-specific declarations (review these defaults for your own situation) ---
+  - patterns:
+      - "have you previously worked at"
+      - "have you previously worked for"
+      - "have you ever worked for"
+      - "have you ever been employed by"
+      - "have you ever been employed or engaged"
+      - "engaged as a contractor"
+      - "been employed by"
+      - "are you currently working in"
+      - "are you currently employed by"
+      - "are you a current employee"
+      - "previously worked at"
+    answer: "No"
+    answer_type: "select"
+
+  - patterns:
+      - "external auditor"
+      - "worked for kpmg"
+      - "worked for the auditor"
+    answer: "No"
+    answer_type: "select"
+    notes: "Auditor-independence check"
+
+  - patterns:
+      - "member of your immediate family"
+      - "immediate family member"
+      - "do you have any relatives"
+      - "relatives or persons"
+      - "covered relationships"
+      - "relative working"
+      - "related to anyone"
+      - "personal relationship with a current employee"
+      - "personal relationship with an employee"
+    answer: "No"
+    answer_type: "select"
+    notes: "Conflict-of-interest declaration"
+
+  - patterns:
+      - "nature of the personal relationship"
+      - "nature of your relationship"
+    answer: "Not Applicable"
+    answer_type: "select"
+    fallbacks: ["N/A", "NA", "None", "Not applicable"]
+    notes: "Follows the 'No' above ('If there is no Personal Relationship, select not applicable')"
+
+  - patterns:
+      - "division that has been acquired"
+      - "acquired by another company"
+    answer: "No"
+    answer_type: "select"
+
+  - patterns:
+      - "managed a team"
+      - "people management experience"
+      - "do you have direct reports"
+    answer: "Yes"
+    answer_type: "select"
+
+  - patterns:
+      - "accessibility adjustments"
+      - "reasonable adjustments"
+      - "adjustments or support required"
+      - "require any accommodation"
+    answer: "No"
+    answer_type: "select"
+
+  - patterns:
+      - "contact method"
+      - "preferred method of contact"
+      - "preferred contact method"
+      - "communication preference"
+      - "preferred method of communication"
+    answer: "Email"
+    answer_type: "select"
+
+  - patterns:
+      - "knowledge skills and experience you would bring"
+      - "skills and experience you would bring"
+      - "summary of your experience"
+      - "professional summary"
+    answer_from: "personal.summary"
+    answer_type: "text"
+
+  - patterns:
+      - "why you re interested in this role"
+      - "why are you interested in this role"
+      - "cover letter"
+    answer_from: "additional.cover_letter"
+    answer_type: "text"
+
+  - patterns:
+      - "are you retiring"
+      - "re employment"
+      - "after your normal retirement"
+    answer: "No"
+    answer_type: "select"
+
+  - patterns:
+      - "senior government official"
+      - "senior commercial person"
+      - "government official"
+      - "politically exposed person"
+    answer: "No"
+    answer_type: "select"
+    notes: "Declarations about public officials / politically exposed persons"
+
+  - patterns:
+      - "make my profile visible"
+      - "profile visibility"
+      - "who can see your profile"
+    answer: "Any"
+    answer_type: "radio"
+    fallbacks: ["All recruiters", "Worldwide", "Everyone"]
+    notes: "Widest recruiter visibility - change if you prefer to be contacted only for jobs you apply to"
+
+  - patterns:
+      - "diversity and inclusion consent"
+      - "consent to share diversity"
+      - "diversity information consent"
+    answer: "Yes"
+    answer_type: "select"
+    notes: "Consent to share the EEO/diversity answers in resume_data.yaml"

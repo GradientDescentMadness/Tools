@@ -2,14 +2,26 @@
 # Automatic Agentic JobApplicator - Settings Configuration
 # =============================================================================
 
-# Outlook / Microsoft Graph API settings
-# Register an app at https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps
-# Required delegated permission: Mail.Read
-# If client_id is left as placeholder, the CLI allows direct manual URL pasting.
-outlook:
-  client_id: "YOUR_CLIENT_ID_HERE"
-  tenant_id: "common"  # Use "common" for personal accounts or your specific Tenant ID
-  lookback_days: 7
+# Job-alert mail (python run.py)
+#   outlook: the Outlook desktop app on this PC - no Azure/app registration. Uses classic Outlook (the
+#            'new Outlook' app has no automation interface); classic Outlook must have your account set up.
+#   folder : emails saved as files (DOCX / PDF / HTML / EML / MSG) in a folder you choose
+# You are asked every run; 'source' is only the default answer.
+mail:
+  source: "outlook"               # outlook | folder
+  outlook_folder: "LinkedIn"      # default folder under Inbox
+  saved_emails_folder: ""         # default for the 'folder' option, e.g. C:\Users\you\Documents\JobAlerts
+  move_processed_to_trash: true   # Outlook -> Deleted Items; saved files -> Recycle Bin (both recoverable)
+  graph_client_id: ""             # optional, only for Outlook on the web via an Azure app (not needed otherwise)
+  graph_tenant_id: "common"
+
+# Screening of job descriptions found in mail
+screening:
+  min_years_experience: 12        # JD must ask for MORE than this ('12+ years' counts, plain '12 years' does not)
+  drop_if_years_not_stated: false # true = also drop JDs that don't state years (false = you decide)
+
+pipeline:
+  tracker_file: "data/job_tracker.json"   # pending / deferred / cancelled / applied jobs with dates
 
 # Browser engine settings (Playwright)
 browser:
@@ -17,28 +29,36 @@ browser:
   slow_mo: 500           # Milliseconds between actions to mimic human interaction and bypass bot filters
   timeout: 30000         # Milliseconds timeout for element selectors
   user_data_dir: ""      # Optional: Path to Chrome profile folder to reuse existing logged-in sessions
+  # --launch-chrome / --attach: work in your own Chrome window and let the tool fill the page you're on
+  cdp_url: "http://127.0.0.1:9222"
+  debug_profile_dir: ""  # default: %LOCALAPPDATA%\JobApplicator\chrome-profile (logins persist there)
+  chrome_path: ""        # default: auto-detect Chrome, else Edge
 
-# LinkedIn mailer search filters
-linkedin:
-  sender_patterns:
-    - "linkedin.com"
-    - "LinkedIn"
-  subject_keywords:
-    - "job"
-    - "opportunity"
-    - "hiring"
-    - "position"
-    - "role"
-    - "career"
-    - "recommend"
-    - "match"
-    - "apply"
+# Portal Authentication Credentials (for auto-login or auto-account-creation on ATS portals)
+# Flow: sign in with email/password -> if that fails and auto_create_account is true, register with the
+# same email/password. If the portal says the account already exists, the password below is wrong.
+auth:
+  auto_login: true
+  auto_create_account: true
+  # username: ""             # Optional: portals with a separate user name (Taleo); defaults to email
+  email: "jane.doe@example.com"
+  password: "YourSecurePassword123!"  # Update with your desired portal password
+  first_name: "Jane"
+  last_name: "Doe"
+  phone_country_code: "India (+91)"
+  phone: "+91-9000000000"
+  country: "India"
+  salutation: "Ms."
+  pronouns: "She/Her"
 
 # Application automation parameters
+# The tool never presses a final Submit button: it always stops at the review stage for you.
 application:
-  pause_before_submit: true     # STRICT SAFETY: Always halts before final submit button
   auto_answer_questions: true   # Auto-resolves questions using qa_rules and location logic
-  screenshots: true             # Captures screenshot evidence at each section/milestone
+  screenshots: true             # Captures full-page screenshot evidence at each section/milestone
   screenshot_dir: "./screenshots"
-  user_input_timeout: 300       # Seconds to wait for user CLI confirmation
+  date_format: "dd/mm/yyyy"     # Used when a date field gives no format hint
+  overwrite_existing: false     # false = keep values already on the form (profile pre-fill, your edits)
+  max_experience_rows: 99       # Cap on Work Experience cards/rows added per application
+  max_education_rows: 99
 

@@ -3,7 +3,7 @@ Skill matching engine using RapidFuzz and technology abbreviation mapping.
 """
 
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 from rapidfuzz import fuzz
 
 
@@ -38,6 +38,13 @@ class AbbreviationMap:
         {"graphql", "gql"},
         {"docker", "containerization"},
         {"linux", "unix"},
+        {"rag", "retrieval augmented generation"},
+        {"genai", "generative ai", "gen ai"},
+        {"llm", "large language model", "large language models"},
+        {"glm", "generalized linear models", "generalized linear model"},
+        {"pyspark", "spark", "apache spark"},
+        {"mlops", "machine learning operations"},
+        {"frm", "financial risk manager", "financial risk management"},
     ]
 
     @classmethod
@@ -66,7 +73,7 @@ class SkillMatcher:
         t = re.sub(r"[._/\\-]", " ", t)
         return re.sub(r"\s+", " ", t).strip()
 
-    def find_best_match(self, dropdown_option: str) -> Tuple[str | None, int]:
+    def find_best_match(self, dropdown_option: str) -> Tuple[Optional[str], int]:
         """Find the user skill that best matches a specific dropdown choice."""
         normalized_option = self._normalize(dropdown_option)
         expanded_options = AbbreviationMap.expand(normalized_option)
@@ -111,4 +118,3 @@ class SkillMatcher:
         """Convenience method returning exact dropdown options to click/select."""
         matches = self.match_dropdown_options(dropdown_options)
         return [m["option"] for m in matches if m["should_select"]]
-

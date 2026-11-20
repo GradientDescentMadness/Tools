@@ -1,0 +1,39 @@
+# Live regression targets. Garbage profile + disposable inbox; the tool never presses final Submit.
+sites:
+  - name: successfactors_anz
+    ats: successfactors
+    url: "https://careers.anz.com/job/Bengaluru-General-Manager-Data-&-AI-Platform/1369423066/?jobPipeline=Indeed"
+
+  - name: workday_citi
+    ats: workday
+    identity: workday
+    url: "https://citi.wd5.myworkdayjobs.com/2/job/Bangalore-Karnataka-India/Director---AIM-USCC-Innovation-and-AI-Lead_26982863"
+
+  - name: oracle_fortive
+    ats: oracle
+    identity: oracle
+    url: "https://ejta.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001/job/11205/"
+
+  - name: taleo_ha
+    ats: taleo
+    identity: taleo
+    url: "https://ha.taleo.net/careersection/ha_ext_cs/jobdetail.ftl?job=HKIC261103&lang=en"
+
+  - name: successfactors_hsbc
+    ats: successfactors
+    identity: hsbc
+    url: "https://career2.successfactors.eu/careers?company=hsbcholdin&career_ns=job_application&src=Eightfold&career_job_req_id=64895&lang=en_GB"
+
+  # Radancy job page -> 'Apply now' -> SuccessFactors job page -> Apply -> Create account + email passcode.
+  # Moody's sign-in has an 'I'm not a robot' check, so a re-run needs a new identity name (moodys5, ...).
+  - name: successfactors_moodys
+    ats: successfactors
+    identity: moodys4
+    url: "https://careers.moodys.com/en/job/-/-/49841/96502604800?utm_source=linkedin&jobPipeline=LinkedIn"
+
+  # HSBC's general Sign In page (the profile with work/education rows is behind it). HSBC creates accounts only
+  # when an application is submitted, so with the throwaway identity this checks the sign-in handling only.
+  - name: successfactors_hsbc_profile
+    ats: successfactors
+    identity: hsbc
+    url: "https://career2.successfactors.eu/career?career_company=hsbcholdin&lang=en_GB&loginFlowRequired=true"

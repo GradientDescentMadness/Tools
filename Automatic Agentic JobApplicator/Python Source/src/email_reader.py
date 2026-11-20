@@ -1,146 +1,129 @@
 """
-Outlook and Microsoft Graph API email ingestion module using MSAL Device Code Flow.
+Outlook (Microsoft Graph) access for LinkedIn job-alert mails: device-code sign-in with a remembered
+token, folder selection under Inbox, reading every message in a folder, and moving processed mail
+to Deleted Items.
+
+Requires an Azure app registration (public client flows enabled) with the delegated permission
+Mail.ReadWrite (read + move). Personal Outlook.com accounts work with tenant 'consumers' or 'common'.
 """
 
-from datetime import datetime, timedelta, timezone
+import os
 import re
-from typing import Any, Dict, List, Optional
-from urllib.parse import parse_qs, urlparse
+from html import unescape
+from pathlib import Path
+from typing import Any, Dict, Iterator, List, Optional
+from urllib.parse import parse_qs, unquote, urlparse
+
 import msal
 import requests
 
+GRAPH = "https://graph.microsoft.com/v1.0"
+SCOPES = ["Mail.ReadWrite"]
+LINKEDIN_JOB = re.compile(r"linkedin\.com/(?:comm/)?jobs/view/(?:[\w%-]*?-)?(\d{6,})", re.I)
+
+
+def token_cache_path() -> Path:
+    base = os.environ.get("LOCALAPPDATA") or str(Path.home())
+    return Path(base) / "JobApplicator" / "msal_token_cache.json"
+
+
+def _unwrap(url: str) -> str:
+    """Undo Outlook Safe Links / redirect wrappers so the real LinkedIn URL can be read."""
+    url = unescape(url)
+    host = urlparse(url).hostname or ""
+    if "safelinks.protection.outlook.com" in host:
+        inner = parse_qs(urlparse(url).query).get("url", [""])[0]
+        return unquote(inner) or url
+    return url
+
 
 def extract_linkedin_job_urls(html_text: str) -> List[str]:
-    """Parse HTML body to extract cleaned LinkedIn job URLs."""
-    raw_urls = re.findall(r"https?://[^\s\"'<>]+", html_text)
-    clean_urls = []
-    seen = set()
+    """Canonical LinkedIn job URLs (one per job id) found in an email body."""
+    seen, out = set(), []
+    for raw in re.findall(r"https?://[^\s\"'<>]+", html_text or ""):
+        m = LINKEDIN_JOB.search(_unwrap(raw))
+        if m and m.group(1) not in seen:
+            seen.add(m.group(1))
+            out.append(f"https://www.linkedin.com/jobs/view/{m.group(1)}/")
+    return out
 
-    for url in raw_urls:
-        if "linkedin.com/jobs/view/" in url or "linkedin.com/comm/jobs/view/" in url:
-            # Strip tracking tokens
-            parsed = urlparse(url)
-            clean = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
-            if clean not in seen:
-                seen.add(clean)
-                clean_urls.append(clean)
 
-    return clean_urls
+def job_id_from_url(url: str) -> str:
+    m = LINKEDIN_JOB.search(url or "")
+    return f"linkedin:{m.group(1)}" if m else url
 
 
 class OutlookEmailReader:
-    """Reads Outlook notification emails to uncover LinkedIn job opportunities."""
+    """Reads LinkedIn job alerts from an Outlook folder and tidies them away afterwards."""
 
-    GRAPH_BASE = "https://graph.microsoft.com/v1.0"
-    SCOPES = ["Mail.Read"]
-
-    def __init__(self, client_id: str, tenant_id: str = "common"):
+    def __init__(self, client_id: str, tenant_id: str = "common", http: Any = None):
         self.client_id = client_id
         self.tenant_id = tenant_id
         self.access_token: Optional[str] = None
-        self.app = msal.PublicClientApplication(
-            self.client_id,
-            authority=f"https://login.microsoftonline.com/{self.tenant_id}",
-        )
+        self.http = http or requests.Session()
+        self.cache = msal.SerializableTokenCache()
+        self.cache_file = token_cache_path()
+        if self.cache_file.exists():
+            self.cache.deserialize(self.cache_file.read_text(encoding="utf-8"))
+        self.app = msal.PublicClientApplication(client_id, authority=f"https://login.microsoftonline.com/{tenant_id}",
+                                                token_cache=self.cache)
 
+    # ------------------------------------------------------------------ auth
     def authenticate(self) -> None:
-        """Authenticate interactively via MSAL Device Code flow."""
+        """Silent sign-in from the remembered token, else the device-code flow (once)."""
         accounts = self.app.get_accounts()
-        if accounts:
-            result = self.app.acquire_token_silent(self.SCOPES, account=accounts[0])
-            if result and "access_token" in result:
-                self.access_token = result["access_token"]
-                return
-
-        flow = self.app.initiate_device_flow(scopes=self.SCOPES)
-        if "user_code" not in flow:
-            raise RuntimeError(f"Failed to initiate device flow: {flow.get('error_description')}")
-
-        print("\n" + "=" * 60)
-        print(" [Microsoft Outlook Sign-In]")
-        print(f" 1. Open URL : {flow['verification_uri']}")
-        print(f" 2. Enter code: {flow['user_code']}")
-        print("=" * 60 + "\n")
-
-        result = self.app.acquire_token_by_device_flow(flow)
-        if "access_token" in result:
-            self.access_token = result["access_token"]
-        else:
+        result = self.app.acquire_token_silent(SCOPES, account=accounts[0]) if accounts else None
+        if not result or "access_token" not in result:
+            flow = self.app.initiate_device_flow(scopes=SCOPES)
+            if "user_code" not in flow:
+                raise RuntimeError(f"Failed to initiate device flow: {flow.get('error_description')}")
+            print("\n" + "=" * 60)
+            print(" [Microsoft Outlook Sign-In]")
+            print(f" 1. Open URL : {flow['verification_uri']}")
+            print(f" 2. Enter code: {flow['user_code']}")
+            print("=" * 60 + "\n")
+            result = self.app.acquire_token_by_device_flow(flow)
+        if "access_token" not in result:
             raise RuntimeError(f"Auth failed: {result.get('error_description')}")
+        self.access_token = result["access_token"]
+        if self.cache.has_state_changed:
+            self.cache_file.parent.mkdir(parents=True, exist_ok=True)
+            self.cache_file.write_text(self.cache.serialize(), encoding="utf-8")
 
-    def _get_headers(self) -> Dict[str, str]:
+    def _headers(self) -> Dict[str, str]:
         if not self.access_token:
             raise ValueError("Not authenticated. Call authenticate() first.")
-        return {"Authorization": f"Bearer {self.access_token}"}
+        return {"Authorization": f"Bearer {self.access_token}", "Prefer": 'outlook.body-content-type="html"'}
 
-    def fetch_linkedin_emails(
-        self,
-        lookback_days: int = 7,
-        sender_patterns: Optional[List[str]] = None,
-        subject_keywords: Optional[List[str]] = None,
-    ) -> List[Dict[str, Any]]:
-        """Query Microsoft Graph API for recent LinkedIn notification messages."""
-        if sender_patterns is None:
-            sender_patterns = ["linkedin.com", "LinkedIn"]
-        if subject_keywords is None:
-            subject_keywords = ["job", "opportunity", "hiring", "role", "apply"]
+    def _get(self, url: str) -> Dict[str, Any]:
+        r = self.http.get(url if url.startswith("http") else f"{GRAPH}{url}", headers=self._headers(), timeout=30)
+        if r.status_code != 200:
+            raise RuntimeError(f"Outlook request failed ({r.status_code}): {r.text[:200]}")
+        return r.json()
 
-        start_time = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        url = (
-            f"{self.GRAPH_BASE}/me/messages?"
-            f"$filter=receivedDateTime ge {start_time}&"
-            f"$select=subject,from,receivedDateTime,body&$top=50"
-        )
-
-        matching_emails = []
+    # ------------------------------------------------------------------ folders and messages
+    def inbox_folders(self) -> List[Dict[str, Any]]:
+        """Folders directly under Inbox: [{'id', 'name', 'total'}]."""
+        out, url = [], "/me/mailFolders/inbox/childFolders?$top=100&$select=id,displayName,totalItemCount"
         while url:
-            resp = requests.get(url, headers=self._get_headers())
-            if resp.status_code != 200:
-                break
+            data = self._get(url)
+            out += [{"id": f["id"], "name": f["displayName"], "total": f.get("totalItemCount", 0)} for f in data.get("value", [])]
+            url = data.get("@odata.nextLink")
+        return out
 
-            data = resp.json()
-            for msg in data.get("value", []):
-                sender_name = msg.get("from", {}).get("emailAddress", {}).get("name", "")
-                sender_addr = msg.get("from", {}).get("emailAddress", {}).get("address", "")
-                subject = msg.get("subject", "")
-
-                is_sender = any(p.lower() in sender_name.lower() or p.lower() in sender_addr.lower() for p in sender_patterns)
-                is_subject = any(k.lower() in subject.lower() for k in subject_keywords)
-
-                if is_sender and is_subject:
-                    matching_emails.append({
-                        "subject": subject,
-                        "from": f"{sender_name} <{sender_addr}>",
-                        "date": msg.get("receivedDateTime"),
-                        "body_html": msg.get("body", {}).get("content", ""),
-                    })
-
+    def messages(self, folder_id: str) -> Iterator[Dict[str, Any]]:
+        """Every message in the folder, oldest first."""
+        url = (f"/me/mailFolders/{folder_id}/messages?$top=25&$orderby=receivedDateTime asc"
+               "&$select=id,subject,from,receivedDateTime,body")
+        while url:
+            data = self._get(url)
+            for m in data.get("value", []):
+                yield {"id": m["id"], "subject": m.get("subject", ""), "received": m.get("receivedDateTime", ""),
+                       "from": (m.get("from", {}) or {}).get("emailAddress", {}).get("address", ""),
+                       "body_html": (m.get("body", {}) or {}).get("content", "")}
             url = data.get("@odata.nextLink")
 
-        return matching_emails
-
-    def get_job_links_from_emails(
-        self,
-        lookback_days: int = 7,
-        sender_patterns: Optional[List[str]] = None,
-        subject_keywords: Optional[List[str]] = None,
-    ) -> List[Dict[str, str]]:
-        """Fetch emails and extract deduplicated job links."""
-        emails = self.fetch_linkedin_emails(lookback_days, sender_patterns, subject_keywords)
-        results = []
-        seen_links = set()
-
-        for mail in emails:
-            extracted = extract_linkedin_job_urls(mail.get("body_html", ""))
-            for link in extracted:
-                if link not in seen_links:
-                    seen_links.add(link)
-                    results.append({
-                        "subject": mail.get("subject", "LinkedIn Job Match"),
-                        "link": link,
-                        "from": mail.get("from", "LinkedIn"),
-                        "date": mail.get("date", ""),
-                    })
-
-        return results
-
+    def move_to_trash(self, message_id: str) -> bool:
+        r = self.http.post(f"{GRAPH}/me/messages/{message_id}/move", headers=self._headers(),
+                           json={"destinationId": "deleteditems"}, timeout=30)
+        return r.status_code in (200, 201)

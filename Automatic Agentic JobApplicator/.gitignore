@@ -1,0 +1,19 @@
+# --- Personal data: never commit (keep these outside the repository) ---
+*_personal.*
+Python Source/Resume_*
+Python Source/config/user_id*.txt
+
+# --- Produced by runs (contain whatever was typed into forms) ---
+Python Source/screenshots/
+Python Source/data/
+
+# --- Live regression output and throwaway identities (disposable-inbox passwords) ---
+Python Source/tests/regression/out/
+Python Source/tests/regression/state*.json
+Python Source/tests/regression/resume_runtime*.yaml
+Python Source/tests/regression/settings_*.yaml
+Python Source/tests/regression/dummy_resume.pdf
+
+# --- Python ---
+__pycache__/
+*.pyc

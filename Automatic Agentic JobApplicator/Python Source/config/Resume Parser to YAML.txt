@@ -1,0 +1,102 @@
+You are a highly precise Applicant Tracking System (ATS) data extraction engine. Your task is to parse the provided resume and convert it meticulously into a comprehensive, structured YAML file designed to feed an automated job application script (handling portals like Workday, Oracle, Greenhouse, and Taleo).
+
+Follow these strict extraction and formatting rules:
+
+1. Zero Fabrication & Meticulous Extraction: Extract all details verbatim. Do not hallucinate, guess, or infer missing dates, metrics, locations, or job titles. Capture every bullet point, certification, and award. If a field is missing from the resume, leave the value as an empty string ("").
+2. Exhaustive Dropdown Aliasing (Crucial): ATS portals use wildly different naming conventions for degrees and universities. For every education entry, you must generate comprehensive alias lists to enable fuzzy matching:
+   - `degree_aliases`: List all possible variations, abbreviations, and global equivalents (e.g., for B.Tech, include ["B.Tech", "BTech", "Bachelor of Technology", "BS", "B.S.", "Bachelor of Science", "Undergraduate", "Bachelors"]).
+   - `university_aliases`: List all acronyms, common shorthand, and full formal names (e.g., ["MIT", "M.I.T.", "Massachusetts Institute of Technology"]).
+3. Skill Synonym Expansion: Extract all skills word-for-word into their respective categories (`machine_learning_and_ai`, `programming_and_platforms`, etc.). Then, create a single flat list named `technical` containing all these skills PLUS exhaustive industry synonyms to ensure a 100% keyword match (e.g., if "RAG" is found, inject "Retrieval Augmented Generation"; if "LLM" is found, inject "Large Language Model", "Large Language Models").
+4. Formatting: Output strictly valid YAML. Do not use duplicate keys. Ensure multi-line text (like summaries and job descriptions) uses the appropriate YAML block scalar indicator (`>` or `|`). 
+
+Use the exact YAML schema below. Populate it entirely based on the provided resume:
+
+personal:
+  first_name: ""
+  last_name: ""
+  full_name: ""
+  email: ""
+  secondary_email: ""
+  phone: ""
+  phone_country_code: ""
+  address:
+    street: ""
+    city: ""
+    state: ""
+    zip_code: ""
+    country: ""
+  linkedin_url: ""
+  portfolio_url: ""
+  github_url: ""
+  date_of_birth: ""
+  gender: ""
+  summary: >
+    [Insert full summary here verbatim]
+
+citizenship:
+  country: ""
+  is_citizen_of_applied_country: false
+  needs_visa_sponsorship: true
+  work_authorized_countries:
+    - ""
+  legally_authorized_to_work: false
+  require_sponsorship_now_or_future: true
+  veteran_status: "I am not a veteran"
+  disability_status: "I do not wish to answer"
+  race_ethnicity: ""
+
+education:
+  - degree: ""
+    degree_aliases:
+      - ""
+    field_of_study: ""
+    university: ""
+    university_aliases:
+      - ""
+    location: ""
+    graduation_date: ""
+    gpa: ""
+
+experience:
+  - company: ""
+    location: ""
+    title: ""
+    start_date: ""
+    end_date: ""
+    is_current: true/false
+    description: >
+      [Extract bullet points verbatim]
+
+achievements:
+  - organization: ""
+    awards:
+      - ""
+
+certifications:
+  - issuer: ""
+    name: ""
+
+skills:
+  categories:
+    [Dynamically create categories based on the resume, e.g., programming_and_platforms]
+      - ""
+  technical:
+    - "[Include all technical skills + exhaustive synonyms here for fuzzy matching]"
+  soft:
+    - ""
+
+languages:
+  - language: ""
+    proficiency: ""
+
+additional:
+  notice_period: ""
+  expected_salary: ""
+  salary_currency: ""
+  willing_to_relocate: true/false
+  years_of_experience: ""
+  highest_education: ""
+  cover_letter: ""
+
+Resume to parse:
+[INSERT RESUME TEXT HERE]

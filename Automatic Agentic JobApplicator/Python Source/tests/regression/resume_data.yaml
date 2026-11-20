@@ -1,0 +1,147 @@
+# =============================================================================
+# REGRESSION PROFILE - GARBAGE DATA. Never use for real applications.
+# Mirrors config/resume_data.yaml structure so every filler path is exercised.
+# Email is replaced at runtime by the disposable inbox created for each test run.
+# =============================================================================
+
+personal:
+  first_name: "Zorblat"
+  last_name: "Quixley"
+  full_name: "Zorblat Quixley"
+  email: "replaced-at-runtime@example.invalid"
+  secondary_email: "zq.alt@example.invalid"
+  phone: "+91-9000000001"
+  phone_country_code: "+91"
+  salutation: "Mr."
+  pronouns: "He/Him"
+  address:
+    street: "42 Regression Test Lane"
+    city: "Bangalore"
+    state: "Karnataka"
+    zip_code: "560001"
+    country: "India"
+  linkedin_url: "https://www.linkedin.com/in/zorblat-quixley-test/"
+  portfolio_url: "https://example.org/zq-portfolio"
+  github_url: "https://github.com/zq-regression-test"
+  date_of_birth: "01/01/1990"
+  gender: "Male"
+  summary: |
+    Regression test persona. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+citizenship:
+  country: "India"
+  is_citizen_of_applied_country: true
+  needs_visa_sponsorship: false
+  work_authorized_countries: "India"
+  legally_authorized_to_work: true
+  require_sponsorship_now_or_future: false
+
+eeoc_and_diversity:
+  age_range: "30-39"
+  gender_identity: "Man"
+  is_transgender: "No"
+  sexual_orientation: "Heterosexual"
+  ethnicity: "Asian"
+  communities: "None of the above"
+  veteran_status: "I am not a protected veteran"
+  disability_status: "I do not wish to answer"
+
+education:
+  - degree: "M.S. in Analytics (AI/ML)"
+    degree_aliases: ["Master of Science", "MS", "M.S.", "MSc", "Masters of Science", "Master's Degree", "Masters", "Master"]
+    field_of_study: "Analytics (AI/ML)"
+    field_of_study_aliases: ["Analytics", "Business Analytics", "Data Analytics", "Machine Learning", "Artificial Intelligence"]
+    field_of_study_fallbacks: ["Data Science", "Computer Science", "Statistics"]
+    university: "University of Michigan"
+    university_aliases: ["UMich", "University of Michigan-Ann Arbor"]
+    location: "Ann Arbor, MI, US"
+    qualification_level: "Master's Degree"
+    qualification_status: "Completed"
+    commencement_date: "01/08/2019"
+    completion_date: "01/05/2021"
+    gpa: ""
+
+  - degree: "M.B.A."
+    degree_aliases: ["MBA", "Master of Business Administration", "Masters of Business Administration", "Post Graduate Diploma in Management", "PGDM", "Master's Degree", "Masters"]
+    field_of_study: "Business Administration"
+    field_of_study_aliases: ["Management", "Business Administration and Management", "Finance"]
+    field_of_study_fallbacks: ["Business", "Commerce"]
+    university: "Indian Institute of Management Ahmedabad"
+    university_aliases: ["IIM Ahmedabad", "IIMA"]
+    location: "Ahmedabad, India"
+    qualification_level: "Master's Degree"
+    qualification_status: "Completed"
+    commencement_date: "01/07/2012"
+    completion_date: "01/05/2014"
+    gpa: ""
+
+  - degree: "B. Tech."
+    degree_aliases: ["Bachelor of Technology", "BTech", "B.Tech", "Bachelor of Engineering", "BE", "B.E.", "Bachelor's Degree", "Bachelors", "Bachelor"]
+    field_of_study: "Production Engineering"
+    field_of_study_aliases: ["Industrial and Production Engineering", "Production and Industrial Engineering"]
+    field_of_study_fallbacks: ["Industrial Engineering", "Manufacturing Engineering", "Mechanical Engineering"]
+    university: "Anna University"
+    university_aliases: ["Anna University Chennai", "College of Engineering Guindy"]
+    location: "Chennai, India"
+    qualification_level: "Bachelor's Degree"
+    qualification_status: "Completed"
+    commencement_date: "01/08/2007"
+    completion_date: "01/06/2011"
+    gpa: ""
+
+experience:
+  - company: "Acme Widgets Pvt Ltd"
+    location: "Bangalore, India"
+    title: "Principal Widget Strategist"
+    industry: "Banking / Financial Services"
+    start_date: "01/03/2021"
+    end_date: "Present"
+    is_current: true
+    description: |
+      - Garbage bullet one: optimized imaginary widgets by 42%.
+      - Garbage bullet two: led a team of placeholder engineers.
+
+  - company: "Globex Corporation"
+    location: "Pune, India"
+    title: "Senior Gizmo Analyst"
+    industry: "Information Technology / Consulting"
+    start_date: "01/06/2016"
+    end_date: "01/02/2021"
+    is_current: false
+    description: |
+      - Garbage bullet: modelled synthetic gizmo churn.
+
+  - company: "Initech Systems"
+    location: "Delhi, India"
+    title: "TPS Report Specialist"
+    industry: "Automotive / Manufacturing"
+    start_date: "01/07/2014"
+    end_date: "01/05/2016"
+    is_current: false
+    description: |
+      - Garbage bullet: added cover sheets to TPS reports.
+
+certifications:
+  - issuer: "Placeholder Institute"
+    name: "Certified Regression Tester"
+
+skills:
+  technical: ["Python", "SQL", "Machine Learning", "Tableau", "Spark"]
+  soft: ["Stakeholder Management"]
+
+languages:
+  - language: "English"
+    proficiency: "Professional"
+  - language: "Hindi"
+    proficiency: "Native"
+
+additional:
+  notice_period: "60 days"
+  current_salary: "1"
+  expected_salary: "2"
+  salary_currency: "INR"
+  willing_to_relocate: true
+  years_of_experience: "10+"
+  highest_education: "Master's Degree"
+  cover_letter: ""
+  resume_file: "tests/regression/dummy_resume.pdf"
